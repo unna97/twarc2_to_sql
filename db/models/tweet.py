@@ -11,7 +11,7 @@ class Tweet(models.Model):
     text = TextField()
     # Figure out type of relationship
     author = ForeignKey('Author', null=True, default=True,
-                        on_delete=SET_NULL)  # one author to many tweets
+                        on_delete=DO_NOTHING)  # one author to many tweets
     possibly_sensitive = BooleanField()
     conversation_id = TextField()
     source = TextField()
