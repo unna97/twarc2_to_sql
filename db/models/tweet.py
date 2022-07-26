@@ -10,13 +10,13 @@ class Tweet(models.Model):
     created_at = DateTimeField()
     text = TextField()
     # Figure out type of relationship
-    author = ForeignKey('Author', null=True, default=True,
+    author = ForeignKey('Author', null=True, default=True, db_constraint=False,
                         on_delete=DO_NOTHING)  # one author to many tweets
     possibly_sensitive = BooleanField()
     conversation_id = TextField()
     source = TextField()
-    reply_settings = TextField()
-    lang = TextField()
+    reply_settings = TextField(null=True)
+    lang = TextField(null=True)
     retweet_count = IntegerField()
     like_count = IntegerField()
     quote_count = IntegerField()
@@ -40,7 +40,7 @@ class Quote(models.Model):
     
     id = AutoField(primary_key=True)
     tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="quoted_tweet")
-    referenced_tweet = ForeignKey("Tweet", on_delete=DO_NOTHING, related_name="quoted_referenced_tweet")
+    referenced_tweet = ForeignKey("Tweet", on_delete=DO_NOTHING, related_name="quoted_referenced_tweet", db_constraint=False)
 
 
 class Retweet(models.Model):
@@ -53,7 +53,7 @@ class Retweet(models.Model):
     id = AutoField(primary_key=True)
     tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="retweeted_tweet")
     referenced_tweet = ForeignKey(
-        "Tweet", on_delete=DO_NOTHING, related_name="retweeted_referenced_tweet")
+        "Tweet", on_delete=DO_NOTHING, related_name="retweeted_referenced_tweet", db_constraint=False)
 
 
 class Replied(models.Model):
@@ -66,5 +66,5 @@ class Replied(models.Model):
     id = AutoField(primary_key=True)
     tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="replied_to_tweet")
     referenced_tweet = ForeignKey(
-        "Tweet", on_delete=DO_NOTHING, related_name="replied_to_referenced_tweet")
-    in_reply_to_user_id = ForeignKey("Author", on_delete=DO_NOTHING)
+        "Tweet", on_delete=DO_NOTHING, related_name="replied_to_referenced_tweet", db_constraint=False)
+    in_reply_to_user = ForeignKey("Author", on_delete=DO_NOTHING, related_name="in_reply_to_user_id", db_constraint=False)
