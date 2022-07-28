@@ -8,39 +8,52 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Author',
+            name="Author",
             fields=[
-                ('id', models.CharField(max_length=256, primary_key=True, serialize=False)),
+                (
+                    "id",
+                    models.CharField(max_length=256, primary_key=True, serialize=False),
+                ),
             ],
             options={
-                'db_table': 'author_data',
+                "db_table": "author_data",
             },
         ),
         migrations.CreateModel(
-            name='Tweet',
+            name="Tweet",
             fields=[
-                ('id', models.CharField(max_length=256, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField()),
-                ('text', models.TextField()),
-                ('possibly_sensitive', models.BooleanField()),
-                ('conversation_id', models.TextField()),
-                ('source', models.TextField()),
-                ('reply_settings', models.TextField()),
-                ('lang', models.TextField()),
-                ('retweet_count', models.IntegerField()),
-                ('like_count', models.IntegerField()),
-                ('quote_count', models.IntegerField()),
-                ('reply_count', models.IntegerField()),
-                ('tweet_type', models.IntegerField()),
-                ('author', models.ForeignKey(default=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='db.author')),
+                (
+                    "id",
+                    models.CharField(max_length=256, primary_key=True, serialize=False),
+                ),
+                ("created_at", models.DateTimeField()),
+                ("text", models.TextField()),
+                ("possibly_sensitive", models.BooleanField()),
+                ("conversation_id", models.TextField()),
+                ("source", models.TextField()),
+                ("reply_settings", models.TextField()),
+                ("lang", models.TextField()),
+                ("retweet_count", models.IntegerField()),
+                ("like_count", models.IntegerField()),
+                ("quote_count", models.IntegerField()),
+                ("reply_count", models.IntegerField()),
+                ("tweet_type", models.IntegerField()),
+                (
+                    "author",
+                    models.ForeignKey(
+                        default=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="db.author",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'tweet_data',
+                "db_table": "tweet_data",
             },
         ),
     ]

@@ -10,17 +10,17 @@ DATABASES = {
 }
 """
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'misogynistic_twitter',
-        'USER': 'postgres',
-        'PASSWORD': 'unnati',
-        'HOST': 'localhost',
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "misogynistic_twitter",
+        "USER": "postgres",
+        "PASSWORD": "unnati",
+        "HOST": "localhost",
+        "PORT": "5432",
     }
 }
-#django postgres setting 
+# django postgres setting
 
-INSTALLED_APPS = ('db',)
+INSTALLED_APPS = ("db",)
 
-SECRET_KEY = 'REPLACE_ME'
+SECRET_KEY = "REPLACE_ME"

@@ -7,23 +7,37 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('db', '0001_initial'),
+        ("db", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Quote',
+            name="Quote",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('referenced_tweet', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='referenced_tweet', to='db.tweet')),
-                ('tweet', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tweet', to='db.tweet')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                (
+                    "referenced_tweet",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="referenced_tweet",
+                        to="db.tweet",
+                    ),
+                ),
+                (
+                    "tweet",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tweet",
+                        to="db.tweet",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'quoted_tweet_mapping',
+                "db_table": "quoted_tweet_mapping",
             },
         ),
         migrations.AddConstraint(
-            model_name='quote',
-            constraint=models.UniqueConstraint(fields=('tweet',), name='unique tweet'),
+            model_name="quote",
+            constraint=models.UniqueConstraint(fields=("tweet",), name="unique tweet"),
         ),
     ]

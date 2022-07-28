@@ -8,9 +8,7 @@ PandasDataFrame = TypeVar("pandas.core.frame.DataFrame")
 
 
 class Object:
-    def __init__(
-        self, base_data: PandasDataFrame
-    ) -> None:
+    def __init__(self, base_data: PandasDataFrame) -> None:
         self.base_data = base_data
         self.base_data = base_data
         self.columns_to_process = base_data.columns.tolist()
@@ -44,28 +42,35 @@ class Object:
 
     def basic_sanity_check(self):
         """
-        - Remove duplicates 
-        - Reset index & drop it 
+        - Remove duplicates
+        - Reset index & drop it
         - any other consisties problems
         """
         table_names = self.get_tables_name_created()
         for table_name in table_names:
             self.tables[table_name] = self.tables[table_name].drop_duplicates()
-            self.tables[table_name] = self.tables[table_name].reset_index(
-                drop=True
-            )
-            
+            self.tables[table_name] = self.tables[table_name].reset_index(drop=True)
+
 
 class TweetObject(Object):
-    def __init__(
-        self, base_data: PandasDataFrame
-    ) -> None:
+    def __init__(self, base_data: PandasDataFrame) -> None:
         super().__init__(base_data)
-        self.columns_in_tweet_table = ['id', 'created_at', 'text', 'author_id',
-                                       'possibly_sensitive', 'conversation_id',
-                                       'source', 'reply_settings', 'retweet_count',
-                                       'like_count', 'quote_count', 'reply_count',
-                                       'tweet_type', 'lang']
+        self.columns_in_tweet_table = [
+            "id",
+            "created_at",
+            "text",
+            "author_id",
+            "possibly_sensitive",
+            "conversation_id",
+            "source",
+            "reply_settings",
+            "retweet_count",
+            "like_count",
+            "quote_count",
+            "reply_count",
+            "tweet_type",
+            "lang",
+        ]
 
     def base_table_creation(self):
         processed_columns = list(
@@ -73,18 +78,21 @@ class TweetObject(Object):
         )
         self.columns_processed.extend(processed_columns)
 
-        self.base_data['tweet_type'] = 0
+        self.base_data["tweet_type"] = 0
 
-        self.base_data['tweet_type']+= self.base_data['id'].isin(
-            self.tables['quoted_tweet_mapping']['tweet_id'])
-        
-        self.base_data['tweet_type']+= 2 * self.base_data['id'].isin(
-            self.tables['retweeted_tweet_mapping']['tweet_id'])
-        
-        self.base_data['tweet_type'] += 3 * self.base_data['id'].isin(
-            self.tables['replied_to_tweet_mapping']['tweet_id'])   
+        self.base_data["tweet_type"] += self.base_data["id"].isin(
+            self.tables["quoted_tweet_mapping"]["tweet_id"]
+        )
 
-        self.tables['tweet_data'] = self.base_data[self.columns_in_tweet_table]     
+        self.base_data["tweet_type"] += 2 * self.base_data["id"].isin(
+            self.tables["retweeted_tweet_mapping"]["tweet_id"]
+        )
+
+        self.base_data["tweet_type"] += 3 * self.base_data["id"].isin(
+            self.tables["replied_to_tweet_mapping"]["tweet_id"]
+        )
+
+        self.tables["tweet_data"] = self.base_data[self.columns_in_tweet_table]
 
         return self.columns_in_tweet_table
 
@@ -145,11 +153,10 @@ class TweetObject(Object):
             self.tables[table_name] = self.tables[table_name][value]
 
         self.columns_processed.append("referenced_tweets")
-    
+
     def entity_tweets_processing(self):
-        
-        tweet_entity = Entities(
-            self.base_data, columns_to_process=["id", "entities"])
+
+        tweet_entity = Entities(self.base_data, columns_to_process=["id", "entities"])
         tweet_entity.url_column_processing()
         tweet_entity.hashtag_column_processing()
 
@@ -160,7 +167,7 @@ class TweetObject(Object):
         return
 
     def processing(self):
-        
+
         self.public_metric_column_processing()
         self.referenced_tweets_processing()
         self.entity_tweets_processing()
@@ -168,41 +175,58 @@ class TweetObject(Object):
 
 
 class Entities(Object):
-
-    def __init__(self, base_data: PandasDataFrame, columns_to_process: List[str]) -> None:
+    def __init__(
+        self, base_data: PandasDataFrame, columns_to_process: List[str]
+    ) -> None:
         self.columns_to_process = columns_to_process
         base_data = base_data[columns_to_process].copy()
         super().__init__(base_data)
-        self.expand_dict_column("entities", ["urls", "hashtags", "mentions", "annotations", "cashtags"], self.base_data)
-    
+        self.expand_dict_column(
+            "entities",
+            ["urls", "hashtags", "mentions", "annotations", "cashtags"],
+            self.base_data,
+        )
+
     def url_column_processing(self):
         url_data = self.base_data[["urls", "id"]].dropna(subset=["urls"])
         url_data.rename(columns={"id": "tweet_id"}, inplace=True)
         url_data = url_data.explode("urls")
-        self.expand_dict_column("urls", ["expanded_url", "display_url", "url", "start", "end"], url_data)
+        self.expand_dict_column(
+            "urls", ["expanded_url", "display_url", "url", "start", "end"], url_data
+        )
         url_data.drop("urls", axis=1, inplace=True)
-        self.tables["url_tweet_mapping"] = url_data[[
-            "tweet_id","expanded_url", "display_url", "url", "start", "end"]]
-        
+        self.tables["url_tweet_mapping"] = url_data[
+            ["tweet_id", "expanded_url", "display_url", "url", "start", "end"]
+        ]
+
     def hashtag_column_processing(self):
         hashtag_data = self.base_data[["hashtags", "id"]].dropna(subset=["hashtags"])
         hashtag_data.rename(columns={"id": "tweet_id"}, inplace=True)
         hashtag_data = hashtag_data.explode("hashtags")
         self.expand_dict_column("hashtags", ["tag", "start", "end"], hashtag_data)
         hashtag_data.drop("hashtags", axis=1, inplace=True)
-        self.tables["hashtag_tweet_mapping"] = hashtag_data[["tweet_id", "tag", "start", "end"]]
+        self.tables["hashtag_tweet_mapping"] = hashtag_data[
+            ["tweet_id", "tag", "start", "end"]
+        ]
 
 
 class User(Object):
-    
     def __init__(self, base_data: PandasDataFrame) -> None:
         super().__init__(base_data)
-        self.columns_in_user_table = ["id", "name", "username", "created_at",
-                                      "description", "location", "url", "pinned_tweet_id", "profile_image_url",
-                                      "protected", "verified"
-                                      ]
-                                      
-    
+        self.columns_in_user_table = [
+            "id",
+            "name",
+            "username",
+            "created_at",
+            "description",
+            "location",
+            "url",
+            "pinned_tweet_id",
+            "profile_image_url",
+            "protected",
+            "verified",
+        ]
+
     def public_metric_column_processing(self):
 
         default_columns_defined_in_user_object = [
@@ -213,21 +237,14 @@ class User(Object):
         ]
 
         self.expand_dict_column(
-            "public_metrics", default_columns_defined_in_user_object, self.base_data)
+            "public_metrics", default_columns_defined_in_user_object, self.base_data
+        )
         self.columns_processed.append("public_metrics")
         self.columns_in_user_table.extend(default_columns_defined_in_user_object)
-    
+
     def base_table_creation(self):
         self.tables["author_data"] = self.base_data[self.columns_in_user_table]
-    
-    
-    
+
     def processing(self):
         self.public_metric_column_processing()
         self.base_table_creation()
-
-
-
-        
-
-        

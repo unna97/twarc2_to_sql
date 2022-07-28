@@ -7,18 +7,28 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('db', '0009_urltweet_hashtag_urltweet_unique url tweet_and_more'),
+        ("db", "0009_urltweet_hashtag_urltweet_unique url tweet_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='quote',
-            name='tweet',
-            field=models.ForeignKey(db_constraint=False, on_delete=django.db.models.deletion.CASCADE, related_name='quoted_tweet', to='db.tweet'),
+            model_name="quote",
+            name="tweet",
+            field=models.ForeignKey(
+                db_constraint=False,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="quoted_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AlterField(
-            model_name='retweet',
-            name='tweet',
-            field=models.ForeignKey(db_constraint=False, on_delete=django.db.models.deletion.CASCADE, related_name='retweeted_tweet', to='db.tweet'),
+            model_name="retweet",
+            name="tweet",
+            field=models.ForeignKey(
+                db_constraint=False,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="retweeted_tweet",
+                to="db.tweet",
+            ),
         ),
     ]

@@ -7,38 +7,58 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('db', '0005_alter_tweet_author'),
+        ("db", "0005_alter_tweet_author"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='quote',
-            name='referenced_tweet',
-            field=models.ForeignKey(db_constraint=False, on_delete=django.db.models.deletion.DO_NOTHING, related_name='quoted_referenced_tweet', to='db.tweet'),
+            model_name="quote",
+            name="referenced_tweet",
+            field=models.ForeignKey(
+                db_constraint=False,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="quoted_referenced_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AlterField(
-            model_name='replied',
-            name='in_reply_to_user_id',
-            field=models.ForeignKey(db_constraint=False, on_delete=django.db.models.deletion.DO_NOTHING, related_name='replied_to_user_id', to='db.author'),
+            model_name="replied",
+            name="in_reply_to_user_id",
+            field=models.ForeignKey(
+                db_constraint=False,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="replied_to_user_id",
+                to="db.author",
+            ),
         ),
         migrations.AlterField(
-            model_name='replied',
-            name='referenced_tweet',
-            field=models.ForeignKey(db_constraint=False, on_delete=django.db.models.deletion.DO_NOTHING, related_name='replied_to_referenced_tweet', to='db.tweet'),
+            model_name="replied",
+            name="referenced_tweet",
+            field=models.ForeignKey(
+                db_constraint=False,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="replied_to_referenced_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AlterField(
-            model_name='retweet',
-            name='referenced_tweet',
-            field=models.ForeignKey(db_constraint=False, on_delete=django.db.models.deletion.DO_NOTHING, related_name='retweeted_referenced_tweet', to='db.tweet'),
+            model_name="retweet",
+            name="referenced_tweet",
+            field=models.ForeignKey(
+                db_constraint=False,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="retweeted_referenced_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AlterField(
-            model_name='tweet',
-            name='lang',
+            model_name="tweet",
+            name="lang",
             field=models.TextField(null=True),
         ),
         migrations.AlterField(
-            model_name='tweet',
-            name='reply_settings',
+            model_name="tweet",
+            name="reply_settings",
             field=models.TextField(null=True),
         ),
     ]

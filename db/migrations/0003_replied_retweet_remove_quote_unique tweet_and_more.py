@@ -7,77 +7,109 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('db', '0002_quote_quote_unique tweet'),
+        ("db", "0002_quote_quote_unique tweet"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Replied',
+            name="Replied",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
             ],
             options={
-                'db_table': 'replied_to_tweet_mapping',
+                "db_table": "replied_to_tweet_mapping",
             },
         ),
         migrations.CreateModel(
-            name='Retweet',
+            name="Retweet",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
             ],
             options={
-                'db_table': 'retweeted_tweet_mapping',
+                "db_table": "retweeted_tweet_mapping",
             },
         ),
         migrations.RemoveConstraint(
-            model_name='quote',
-            name='unique tweet',
+            model_name="quote",
+            name="unique tweet",
         ),
         migrations.AlterField(
-            model_name='quote',
-            name='referenced_tweet',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='quoted_referenced_tweet', to='db.tweet'),
+            model_name="quote",
+            name="referenced_tweet",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="quoted_referenced_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AlterField(
-            model_name='quote',
-            name='tweet',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='quoted_tweet', to='db.tweet'),
+            model_name="quote",
+            name="tweet",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="quoted_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='quote',
-            constraint=models.UniqueConstraint(fields=('tweet',), name='unique quote tweet'),
+            model_name="quote",
+            constraint=models.UniqueConstraint(
+                fields=("tweet",), name="unique quote tweet"
+            ),
         ),
         migrations.AddField(
-            model_name='retweet',
-            name='referenced_tweet',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='retweeted_referenced_tweet', to='db.tweet'),
+            model_name="retweet",
+            name="referenced_tweet",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="retweeted_referenced_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AddField(
-            model_name='retweet',
-            name='tweet',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='retweeted_tweet', to='db.tweet'),
+            model_name="retweet",
+            name="tweet",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="retweeted_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AddField(
-            model_name='replied',
-            name='in_reply_to_user_id',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='db.author'),
+            model_name="replied",
+            name="in_reply_to_user_id",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING, to="db.author"
+            ),
         ),
         migrations.AddField(
-            model_name='replied',
-            name='referenced_tweet',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, related_name='replied_to_referenced_tweet', to='db.tweet'),
+            model_name="replied",
+            name="referenced_tweet",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                related_name="replied_to_referenced_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AddField(
-            model_name='replied',
-            name='tweet',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='replied_to_tweet', to='db.tweet'),
+            model_name="replied",
+            name="tweet",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="replied_to_tweet",
+                to="db.tweet",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='retweet',
-            constraint=models.UniqueConstraint(fields=('tweet',), name='unique retweet tweet'),
+            model_name="retweet",
+            constraint=models.UniqueConstraint(
+                fields=("tweet",), name="unique retweet tweet"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='replied',
-            constraint=models.UniqueConstraint(fields=('tweet',), name='unique replied tweet'),
+            model_name="replied",
+            constraint=models.UniqueConstraint(
+                fields=("tweet",), name="unique replied tweet"
+            ),
         ),
     ]
