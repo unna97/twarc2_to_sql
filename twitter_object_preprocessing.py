@@ -42,6 +42,20 @@ class Object:
             data[key] = data[column].apply(lambda x: x.get(key, np.nan))
         return data
 
+    def basic_sanity_check(self):
+        """
+        - Remove duplicates 
+        - Reset index & drop it 
+        - any other consisties problems
+        """
+        table_names = self.get_tables_name_created()
+        for table_name in table_names:
+            self.tables[table_name] = self.tables[table_name].drop_duplicates()
+            self.tables[table_name] = self.tables[table_name].reset_index(
+                drop=True
+            )
+            
+
 
 class TweetObject(Object):
     def __init__(
@@ -133,17 +147,48 @@ class TweetObject(Object):
 
         self.columns_processed.append("referenced_tweets")
     
+    def entity_tweets_processing(self):
+        
+        tweet_entity = Entities(
+            self.base_data, columns_to_process=["id", "entities"])
+        tweet_entity.url_column_processing()
+        tweet_entity.hashtag_column_processing()
+
+        self.tables = {**self.tables, **tweet_entity.tables}
+
+        self.columns_processed.append("entities")
+
+        return
+
     def processing(self):
         
         self.public_metric_column_processing()
         self.referenced_tweets_processing()
+        self.entity_tweets_processing()
         self.base_table_creation()
 
 
-# class Entities(Object):
+class Entities(Object):
 
-#     def __init__(self, base_data: PandasDataFrame, columns_to_process: List[str]) -> None:
-#         super().__init__(base_data, columns_to_process)
-
-#     def urls_processing(self, ):
-#         return url
+    def __init__(self, base_data: PandasDataFrame, columns_to_process: List[str]) -> None:
+        self.columns_to_process = columns_to_process
+        base_data = base_data[columns_to_process].copy()
+        super().__init__(base_data)
+        self.expand_dict_column("entities", ["urls", "hashtags", "mentions", "annotations", "cashtags"], self.base_data)
+    
+    def url_column_processing(self):
+        url_data = self.base_data[["urls", "id"]].dropna(subset=["urls"])
+        url_data.rename(columns={"id": "tweet_id"}, inplace=True)
+        url_data = url_data.explode("urls")
+        self.expand_dict_column("urls", ["expanded_url", "display_url", "url", "start", "end"], url_data)
+        url_data.drop("urls", axis=1, inplace=True)
+        self.tables["url_tweet_mapping"] = url_data[[
+            "tweet_id","expanded_url", "display_url", "url", "start", "end"]]
+        
+    def hashtag_column_processing(self):
+        hashtag_data = self.base_data[["hashtags", "id"]].dropna(subset=["hashtags"])
+        hashtag_data.rename(columns={"id": "tweet_id"}, inplace=True)
+        hashtag_data = hashtag_data.explode("hashtags")
+        self.expand_dict_column("hashtags", ["tag", "start", "end"], hashtag_data)
+        hashtag_data.drop("hashtags", axis=1, inplace=True)
+        self.tables["hashtag_tweet_mapping"] = hashtag_data[["tweet_id", "tag", "start", "end"]]

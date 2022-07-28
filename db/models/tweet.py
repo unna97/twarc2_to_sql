@@ -1,4 +1,5 @@
 from enum import unique
+from pyexpat import model
 from django.db import models
 from django.db.models import *
 
@@ -68,3 +69,34 @@ class Replied(models.Model):
     referenced_tweet = ForeignKey(
         "Tweet", on_delete=DO_NOTHING, related_name="replied_to_referenced_tweet", db_constraint=False)
     in_reply_to_user = ForeignKey("Author", on_delete=DO_NOTHING, related_name="in_reply_to_user_id", db_constraint=False)
+
+
+class UrlTweet(models.Model):
+    class Meta:
+        db_table = "url_tweet_mapping"
+        constraints = [
+            models.UniqueConstraint(fields=["tweet","start"], name='unique url tweet')
+        ]
+
+    id = AutoField(primary_key=True)
+    tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="tweet_url", db_constraint=False)
+    start = IntegerField()
+    end = IntegerField()
+    url = TextField()
+    expanded_url = TextField()
+    display_url = TextField()
+    
+
+class HashTag(models.Model):
+    class Meta:
+        db_table = "hashtag_tweet_mapping"
+        constraints = [
+            models.UniqueConstraint(fields=["tweet","start"], name='unique hashtag tweet')
+        ]
+
+    id = AutoField(primary_key=True)
+    tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="tweet_hashtag", db_constraint=False)
+    start = IntegerField()
+    end = IntegerField()
+    tag = TextField()
+    
