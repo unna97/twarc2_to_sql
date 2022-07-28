@@ -12,7 +12,7 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'dbname',
+        'NAME': 'misogynistic_twitter',
         'USER': 'postgres',
         'PASSWORD': 'unnati',
         'HOST': 'localhost',

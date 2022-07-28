@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import *
+import datetime
 
 class Tweet(models.Model):
     class Meta:
@@ -10,7 +11,7 @@ class Tweet(models.Model):
     text = TextField()
     # Figure out type of relationship
     author = ForeignKey('Author', null=True, default=True, db_constraint=False,
-                        on_delete=DO_NOTHING)  # one author to many tweets
+                        on_delete=DO_NOTHING, related_name="author_of_tweet")  # one author to many tweets
     possibly_sensitive = BooleanField()
     conversation_id = TextField()
     source = TextField()
@@ -28,6 +29,20 @@ class Author(models.Model):
         db_table = "author_data"
     
     id = CharField(primary_key=True, max_length=256)
+    name = TextField(default="")
+    username = TextField(default="")
+    created_at = DateTimeField(default=None, null=True)
+    description = TextField(null=True)
+    location = TextField(null=True)
+    pinned_tweet = ForeignKey('Tweet', null=True, on_delete=DO_NOTHING,db_constraint=False, related_name="pinned_tweet_of_user")
+    profile_image_url = TextField(null=True)
+    protected = BooleanField(default=False)
+    url = TextField(null=True)
+    verified = BooleanField(default=False)
+    followers_count = IntegerField(default=0)
+    following_count = IntegerField(default=0)
+    listed_count = IntegerField(default=0)
+    tweet_count = IntegerField(default=0)
 
 
 class Quote(models.Model):
@@ -38,7 +53,7 @@ class Quote(models.Model):
                     ]
     
     id = AutoField(primary_key=True)
-    tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="quoted_tweet")
+    tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="quoted_tweet", db_constraint=False)
     referenced_tweet = ForeignKey("Tweet", on_delete=DO_NOTHING, related_name="quoted_referenced_tweet", db_constraint=False)
 
 
@@ -50,7 +65,7 @@ class Retweet(models.Model):
         ]
 
     id = AutoField(primary_key=True)
-    tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="retweeted_tweet")
+    tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="retweeted_tweet", db_constraint=False)
     referenced_tweet = ForeignKey(
         "Tweet", on_delete=DO_NOTHING, related_name="retweeted_referenced_tweet", db_constraint=False)
 

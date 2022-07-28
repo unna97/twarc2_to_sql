@@ -56,7 +56,6 @@ class Object:
             )
             
 
-
 class TweetObject(Object):
     def __init__(
         self, base_data: PandasDataFrame
@@ -192,3 +191,43 @@ class Entities(Object):
         self.expand_dict_column("hashtags", ["tag", "start", "end"], hashtag_data)
         hashtag_data.drop("hashtags", axis=1, inplace=True)
         self.tables["hashtag_tweet_mapping"] = hashtag_data[["tweet_id", "tag", "start", "end"]]
+
+
+class User(Object):
+    
+    def __init__(self, base_data: PandasDataFrame) -> None:
+        super().__init__(base_data)
+        self.columns_in_user_table = ["id", "name", "username", "created_at",
+                                      "description", "location", "url", "pinned_tweet_id", "profile_image_url",
+                                      "protected", "verified"
+                                      ]
+                                      
+    
+    def public_metric_column_processing(self):
+
+        default_columns_defined_in_user_object = [
+            "followers_count",
+            "following_count",
+            "tweet_count",
+            "listed_count",
+        ]
+
+        self.expand_dict_column(
+            "public_metrics", default_columns_defined_in_user_object, self.base_data)
+        self.columns_processed.append("public_metrics")
+        self.columns_in_user_table.extend(default_columns_defined_in_user_object)
+    
+    def base_table_creation(self):
+        self.tables["author_data"] = self.base_data[self.columns_in_user_table]
+    
+    
+    
+    def processing(self):
+        self.public_metric_column_processing()
+        self.base_table_creation()
+
+
+
+        
+
+        

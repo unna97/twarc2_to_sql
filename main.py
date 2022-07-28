@@ -25,14 +25,17 @@ def insert_data_into_database(files: List[str], folder_path: str) -> None:
 
             tweet_object = TweetObject(tweets_data)
             tweet_object.processing()
+
+            user_object = User(user_data)
+            user_object.processing()
             break
         break
-    return tweet_object
+    return tweet_object, user_object
 
 def get_files_and_insert():
     base_folder = "D:\Misogynistic"
     curr_task = "Search"
     folder_path = base_folder + "\\" + curr_task
     files = os.listdir(folder_path)
-    tweet_object = insert_data_into_database(files, folder_path)
-    return tweet_object
+    tweet_object,user_object = insert_data_into_database(files, folder_path)
+    return tweet_object, user_object
