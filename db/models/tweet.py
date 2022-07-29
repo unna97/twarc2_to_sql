@@ -105,7 +105,7 @@ class Replied(models.Model):
         ]
 
     id = AutoField(primary_key=True)
-    tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="replied_to_tweet")
+    tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="replied_to_tweet", db_constraint=False)
     referenced_tweet = ForeignKey(
         "Tweet",
         on_delete=DO_NOTHING,
@@ -154,3 +154,42 @@ class HashTag(models.Model):
     start = IntegerField()
     end = IntegerField()
     tag = TextField()
+
+
+class CashTag(models.Model):
+    class Meta:
+        db_table = "cashtag_tweet_mapping"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["tweet", "start"], name="unique cashtag tweet"
+            )
+        ]
+
+    id = AutoField(primary_key=True)
+    tweet = ForeignKey(
+        "Tweet", on_delete=CASCADE, related_name="tweet_cashtag", db_constraint=False
+    )
+    start = IntegerField()
+    end = IntegerField()
+    tag = TextField()
+
+
+class Mentions(models.Model):
+    class Meta:
+        db_table = "mentions_tweet_mapping"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["tweet", "start"], name="unique mentions tweet"
+            )
+        ]
+
+    id = AutoField(primary_key=True)
+    tweet = ForeignKey(
+        "Tweet", on_delete=CASCADE, related_name="tweet_mentions", db_constraint=False
+    )
+    start = IntegerField()
+    end = IntegerField()
+    mention_user = ForeignKey(
+        "Author", on_delete=DO_NOTHING, related_name="mention_user_id", db_constraint=False
+    )
+    username = TextField()
