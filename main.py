@@ -64,7 +64,7 @@ def insert_data_into_database(files: List[str], folder_path: str, engine) -> Non
                 if len(tweet_object.tables[cur_table]) == 0:
                     print('Empty table: {}'.format(cur_table))
                 else:
-                    print('Table inserted: {}'.format(cur_table))
+                    # print('Table inserted: {}'.format(cur_table))
                     tweet_object.tables[cur_table].to_sql(
                         name=cur_table, con=engine, if_exists='append', index=False, method=insert_on_duplicate)
 
@@ -75,10 +75,12 @@ def insert_data_into_database(files: List[str], folder_path: str, engine) -> Non
             for cur_table in user_object.tables.keys():
                 if len(user_object.tables[cur_table]) == 0:
                     print('Empty table: {}'.format(cur_table))
+
                 else:
-                    print('Table inserted: {}'.format(cur_table))
+                    # print('Table inserted: {}'.format(cur_table))
                     user_object.tables[cur_table].to_sql(
                         name=cur_table, con=engine, if_exists='append', index=False, method=insert_on_duplicate)
+
     return tweet_object, user_object
 
 

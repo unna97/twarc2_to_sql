@@ -6,6 +6,10 @@ import datetime
 class Tweet(models.Model):
     class Meta:
         db_table = "tweet_data"
+    
+    def clean_text(self) -> None:
+        self.text = self.text.replace("\x00", "\uFFFD")
+
 
     id = CharField(max_length=256, primary_key=True)
     created_at = DateTimeField()
@@ -35,6 +39,10 @@ class Tweet(models.Model):
 class Author(models.Model):
     class Meta:
         db_table = "author_data"
+    
+    def clean_description(self) -> None:
+        self.description = self.description.replace("\x00", "\uFFFD")
+
 
     id = CharField(primary_key=True, max_length=256)
     name = TextField(default="")

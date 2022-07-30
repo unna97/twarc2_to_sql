@@ -98,6 +98,7 @@ class TweetObject(Object):
         )
 
         self.tables["tweet_data"] = self.base_data[self.columns_in_tweet_table]
+        self.tables["tweet_data"] = self.tables['tweet_data'].dropna(subset=['id'])
 
         return self.columns_in_tweet_table
 
@@ -281,6 +282,9 @@ class User(Object):
 
     def base_table_creation(self):
         self.tables["author_data"] = self.base_data[self.columns_in_user_table]
+        self.tables["author_data"] = self.tables["author_data"].dropna(subset=["id"])
+        self.tables["author_data"]['description'] = self.tables["author_data"]['description'].str.replace(
+            "\x00", "\uFFFD")
 
     def processing(self):
         self.public_metric_column_processing()
