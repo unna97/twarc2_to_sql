@@ -9,32 +9,32 @@ import sqlalchemy as sa
 def create_engine():
 
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'misogynistic_twitter',
-            'USER': 'postgres',
-            'PASSWORD': 'unnati',
-            'HOST': 'localhost',
-            'PORT': '5432',
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2",
+            "NAME": "misogynistic_twitter",
+            "USER": "postgres",
+            "PASSWORD": "unnati",
+            "HOST": "localhost",
+            "PORT": "5432",
         }
     }
 
-    database_url = 'postgresql://{user}:{password}@localhost:5432/{database_name}'.format(
-        user=DATABASES['default']['USER'],
-        password=DATABASES['default']['PASSWORD'],
-        database_name=DATABASES['default']['NAME'],
+    database_url = (
+        "postgresql://{user}:{password}@localhost:5432/{database_name}".format(
+            user=DATABASES["default"]["USER"],
+            password=DATABASES["default"]["PASSWORD"],
+            database_name=DATABASES["default"]["NAME"],
+        )
     )
 
     engine = sa.create_engine(database_url, pool_pre_ping=True)
     return engine
 
 
-
 def insert_on_duplicate(table, conn, keys, data_iter):
     insert_stmt = insert(table.table).values(list(data_iter))
     on_duplicate_key_stmt = insert_stmt.on_conflict_do_nothing()
     conn.execute(on_duplicate_key_stmt)
-
 
 
 def insert_data_into_database(files: List[str], folder_path: str, engine) -> None:
@@ -62,11 +62,16 @@ def insert_data_into_database(files: List[str], folder_path: str, engine) -> Non
             ## Insert tweet_objects data into the database
             for cur_table in tweet_object.tables.keys():
                 if len(tweet_object.tables[cur_table]) == 0:
-                    print('Empty table: {}'.format(cur_table))
+                    print("Empty table: {}".format(cur_table))
                 else:
                     # print('Table inserted: {}'.format(cur_table))
                     tweet_object.tables[cur_table].to_sql(
-                        name=cur_table, con=engine, if_exists='append', index=False, method=insert_on_duplicate)
+                        name=cur_table,
+                        con=engine,
+                        if_exists="append",
+                        index=False,
+                        method=insert_on_duplicate,
+                    )
 
             user_object = User(user_data)
             user_object.processing()
@@ -74,12 +79,17 @@ def insert_data_into_database(files: List[str], folder_path: str, engine) -> Non
             ## Insert user_objects data into the database
             for cur_table in user_object.tables.keys():
                 if len(user_object.tables[cur_table]) == 0:
-                    print('Empty table: {}'.format(cur_table))
+                    print("Empty table: {}".format(cur_table))
 
                 else:
                     # print('Table inserted: {}'.format(cur_table))
                     user_object.tables[cur_table].to_sql(
-                        name=cur_table, con=engine, if_exists='append', index=False, method=insert_on_duplicate)
+                        name=cur_table,
+                        con=engine,
+                        if_exists="append",
+                        index=False,
+                        method=insert_on_duplicate,
+                    )
 
     return tweet_object, user_object
 

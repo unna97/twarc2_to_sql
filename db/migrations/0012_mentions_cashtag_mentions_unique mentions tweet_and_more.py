@@ -7,43 +7,71 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('db', '0011_author_created_at_author_description_and_more'),
+        ("db", "0011_author_created_at_author_description_and_more"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Mentions',
+            name="Mentions",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('start', models.IntegerField()),
-                ('end', models.IntegerField()),
-                ('username', models.TextField()),
-                ('mention_user', models.ForeignKey(db_constraint=False, on_delete=django.db.models.deletion.DO_NOTHING, related_name='mention_user_id', to='db.author')),
-                ('tweet', models.ForeignKey(db_constraint=False, on_delete=django.db.models.deletion.CASCADE, related_name='tweet_mentions', to='db.tweet')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("start", models.IntegerField()),
+                ("end", models.IntegerField()),
+                ("username", models.TextField()),
+                (
+                    "mention_user",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        related_name="mention_user_id",
+                        to="db.author",
+                    ),
+                ),
+                (
+                    "tweet",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tweet_mentions",
+                        to="db.tweet",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'mentions_tweet_mapping',
+                "db_table": "mentions_tweet_mapping",
             },
         ),
         migrations.CreateModel(
-            name='CashTag',
+            name="CashTag",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('start', models.IntegerField()),
-                ('end', models.IntegerField()),
-                ('tag', models.TextField()),
-                ('tweet', models.ForeignKey(db_constraint=False, on_delete=django.db.models.deletion.CASCADE, related_name='tweet_cashtag', to='db.tweet')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("start", models.IntegerField()),
+                ("end", models.IntegerField()),
+                ("tag", models.TextField()),
+                (
+                    "tweet",
+                    models.ForeignKey(
+                        db_constraint=False,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tweet_cashtag",
+                        to="db.tweet",
+                    ),
+                ),
             ],
             options={
-                'db_table': 'cashtag_tweet_mapping',
+                "db_table": "cashtag_tweet_mapping",
             },
         ),
         migrations.AddConstraint(
-            model_name='mentions',
-            constraint=models.UniqueConstraint(fields=('tweet', 'start'), name='unique mentions tweet'),
+            model_name="mentions",
+            constraint=models.UniqueConstraint(
+                fields=("tweet", "start"), name="unique mentions tweet"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='cashtag',
-            constraint=models.UniqueConstraint(fields=('tweet', 'start'), name='unique cashtag tweet'),
+            model_name="cashtag",
+            constraint=models.UniqueConstraint(
+                fields=("tweet", "start"), name="unique cashtag tweet"
+            ),
         ),
     ]

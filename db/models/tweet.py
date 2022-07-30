@@ -6,10 +6,9 @@ import datetime
 class Tweet(models.Model):
     class Meta:
         db_table = "tweet_data"
-    
+
     def clean_text(self) -> None:
         self.text = self.text.replace("\x00", "\uFFFD")
-
 
     id = CharField(max_length=256, primary_key=True)
     created_at = DateTimeField()
@@ -39,10 +38,9 @@ class Tweet(models.Model):
 class Author(models.Model):
     class Meta:
         db_table = "author_data"
-    
+
     def clean_description(self) -> None:
         self.description = self.description.replace("\x00", "\uFFFD")
-
 
     id = CharField(primary_key=True, max_length=256)
     name = TextField(default="")
@@ -113,7 +111,9 @@ class Replied(models.Model):
         ]
 
     id = AutoField(primary_key=True)
-    tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="replied_to_tweet", db_constraint=False)
+    tweet = ForeignKey(
+        "Tweet", on_delete=CASCADE, related_name="replied_to_tweet", db_constraint=False
+    )
     referenced_tweet = ForeignKey(
         "Tweet",
         on_delete=DO_NOTHING,
@@ -198,6 +198,9 @@ class Mentions(models.Model):
     start = IntegerField()
     end = IntegerField()
     mention_user = ForeignKey(
-        "Author", on_delete=DO_NOTHING, related_name="mention_user_id", db_constraint=False
+        "Author",
+        on_delete=DO_NOTHING,
+        related_name="mention_user_id",
+        db_constraint=False,
     )
     username = TextField()

@@ -98,7 +98,7 @@ class TweetObject(Object):
         )
 
         self.tables["tweet_data"] = self.base_data[self.columns_in_tweet_table]
-        self.tables["tweet_data"] = self.tables['tweet_data'].dropna(subset=['id'])
+        self.tables["tweet_data"] = self.tables["tweet_data"].dropna(subset=["id"])
 
         return self.columns_in_tweet_table
 
@@ -168,7 +168,6 @@ class TweetObject(Object):
         tweet_entity.cashtag_column_processing()
         tweet_entity.mention_column_processing()
 
-
         self.tables = {**self.tables, **tweet_entity.tables}
 
         self.columns_processed.append("entities")
@@ -185,7 +184,10 @@ class TweetObject(Object):
 
 class Entities(Object):
     def __init__(
-        self, base_data: PandasDataFrame, columns_to_process: List[str],type_object:str = "tweet"
+        self,
+        base_data: PandasDataFrame,
+        columns_to_process: List[str],
+        type_object: str = "tweet",
     ) -> None:
         self.columns_to_process = columns_to_process
         base_data = base_data[columns_to_process].copy()
@@ -220,32 +222,28 @@ class Entities(Object):
         ]
 
     def cashtag_column_processing(self):
-        cashtag_data = self.base_data[["cashtags", "id"]].dropna(subset=[
-                                                                 "cashtags"])
-        
+        cashtag_data = self.base_data[["cashtags", "id"]].dropna(subset=["cashtags"])
+
         cashtag_data.rename(columns={"id": "tweet_id"}, inplace=True)
         cashtag_data = cashtag_data.explode("cashtags")
-        self.expand_dict_column(
-            "cashtags", ["tag", "start", "end"], cashtag_data)
+        self.expand_dict_column("cashtags", ["tag", "start", "end"], cashtag_data)
         cashtag_data.drop("cashtags", axis=1, inplace=True)
         self.tables["cashtag_tweet_mapping"] = cashtag_data[
             ["tweet_id", "tag", "start", "end"]
         ]
-    
+
     def mention_column_processing(self):
         mention_data = self.base_data[["mentions", "id"]].dropna(subset=["mentions"])
         mention_data.rename(columns={"id": "tweet_id"}, inplace=True)
         mention_data = mention_data.explode("mentions")
         self.expand_dict_column(
-            "mentions", ["username","id", "start", "end"], mention_data
+            "mentions", ["username", "id", "start", "end"], mention_data
         )
         mention_data.drop("mentions", axis=1, inplace=True)
         mention_data.rename(columns={"id": "mention_user_id"}, inplace=True)
         self.tables["mention_tweet_mapping"] = mention_data[
             ["tweet_id", "mention_user_id", "username", "start", "end"]
         ]
-
-
 
 
 class User(Object):
@@ -283,8 +281,9 @@ class User(Object):
     def base_table_creation(self):
         self.tables["author_data"] = self.base_data[self.columns_in_user_table]
         self.tables["author_data"] = self.tables["author_data"].dropna(subset=["id"])
-        self.tables["author_data"]['description'] = self.tables["author_data"]['description'].str.replace(
-            "\x00", "\uFFFD")
+        self.tables["author_data"]["description"] = self.tables["author_data"][
+            "description"
+        ].str.replace("\x00", "\uFFFD")
 
     def processing(self):
         self.public_metric_column_processing()
