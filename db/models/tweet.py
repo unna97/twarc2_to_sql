@@ -33,6 +33,16 @@ class Tweet(models.Model):
     reply_count = IntegerField()
     # 0: tweet, 1: quoted tweet, 2: retweeted tweet, 3: replied to tweet, 4: quoted tweet + replied to tweet
     tweet_type = IntegerField()
+    # geo = JSONField(null=True)
+
+# class Geo():
+#     class Meta:
+#         db_table = "geo_tweet_data"
+    
+#     geo= JSONField(null=True)
+#     place_id = TextField(null=True)
+#     tweet = ForeignKey("Tweet", on_delete=CASCADE, related_name="tweet_of_geo", primary_key=True, 
+#                        db_constraint=False)
 
 
 class Author(models.Model):

@@ -173,6 +173,16 @@ class TweetObject(Object):
         self.columns_processed.append("entities")
 
         return
+    
+    def geo_tweets_processing(self):
+        columns_needed = ['geo', 'id']
+        data.rename(columns={"id": "tweet_id"}, inplace=True)
+        data = self.base_data[columns_needed]
+        
+        self.expand_dict_column("geo", ["place_id", "coordinates"], data)
+ 
+        self.columns_processed.append("geo")
+        return
 
     def processing(self):
 
