@@ -72,12 +72,9 @@ def insert_data_into_database(files: List[str], folder_path: str, engine) -> Non
                         index=False,
                         method=insert_on_duplicate,
                     )
-                break
 
             user_object = User(user_data)
             user_object.processing()
-                
-            break
 
             ## Insert user_objects data into the database
             for cur_table in user_object.tables.keys():
@@ -93,7 +90,6 @@ def insert_data_into_database(files: List[str], folder_path: str, engine) -> Non
                         index=False,
                         method=insert_on_duplicate,
                     )
-            break
 
     return tweet_object, user_object
 
