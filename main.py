@@ -4,6 +4,7 @@ import os
 from twitter_object_preprocessing import *
 from sqlalchemy.dialects.postgresql import insert
 import sqlalchemy as sa
+#import dotenv # pip install python-dotenv
 
 
 def create_engine():
